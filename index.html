@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marketing Studio -- Client Intake</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --white:    #FFFFFF;
+    --teal:     #9EF8EC;
+    --offwhite: #F7F9FC;
+    --slate:    #9197AE;
+    --ink:      #2c2f3a;
+    --dark:     #022B6D;
+    --card:     #FFFFFF;
+    --rule:     #e3e6ee;
+    --green:    #2d7a6a;
+    --danger:   #c0392b;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #F0F2F5;
+    font-family: 'Montserrat', sans-serif;
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* -- PROGRESS -- */
+  .progress-bar-wrap {
+    background: var(--rule); height: 6px;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 1px 4px rgba(30,33,48,0.08);
+  }
+  .progress-bar-fill {
+    height: 100%; background: var(--teal);
+    width: 0%; transition: width 0.5s ease;
+    position: relative;
+  }
+  .progress-bar-fill::after {
+    content: attr(data-label);
+    position: absolute;
+    right: 0; top: 8px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px; font-weight: 700;
+    color: var(--slate); white-space: nowrap;
+    transform: translateX(50%);
+    letter-spacing: 0.5px;
+  }
+
+  /* -- LAYOUT -- */
+  .wizard-wrap {
+    max-width: 680px; margin: 0 auto;
+    padding: 40px 28px 120px;
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  /* -- CARD (wizard step) -- */
+  .wcard {
+    display: none; opacity: 0;
+    background: var(--white); border-radius: 16px;
+    padding: 52px 48px 48px;
+    border: 1px solid var(--rule);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    position: relative;
+  }
+  .wcard::before {
+    content: ''; position: absolute;
+    top: 0; left: 0; right: 0; height: 3px;
+    background: var(--teal); border-radius: 16px 16px 0 0;
+    opacity: 0; transition: opacity 0.2s;
+  }
+  .wcard:focus-within::before { opacity: 1; }
+  .wcard:focus-within { box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+
+  .wcard-active {
+    display: block;
+    animation: fadeSlideIn 0.6s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+  }
+  .wcard-exit {
+    display: block;
+    animation: fadeSlideOut 0.25s ease-in forwards;
+  }
+
+  @keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeSlideOut {
+    from { opacity: 1; transform: translateY(0); }
+    to   { opacity: 0; transform: translateY(-8px); }
+  }
+
+  /* -- CARD HEAD -- */
+  .card-head { margin-bottom: 34px; padding-bottom: 24px; border-bottom: 1px solid var(--rule); }
+  .card-label {
+    font-size: 15px; font-weight: 700; color: var(--dark);
+    letter-spacing: 0.5px;
+  }
+  .card-desc {
+    font-size: 12.5px; color: var(--slate); margin-top: 4px; line-height: 1.6;
+  }
+
+  /* -- WELCOME CARD -- */
+  .welcome-center {
+    text-align: center;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    min-height: 50vh;
+    padding: 40px 0;
+  }
+  .welcome-center h1 {
+    font-size: 30px; font-weight: 700; color: var(--dark);
+    line-height: 1.25; margin-bottom: 14px; letter-spacing: 0.3px;
+  }
+  .welcome-center p {
+    font-size: 14px; color: var(--slate); line-height: 1.7;
+    max-width: 420px; margin: 0 auto 32px;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 4px 12px; border-radius: 50px;
+    font-size: 9.5px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    background: rgba(158,248,236,0.15);
+    color: var(--green);
+    border: 1px solid rgba(158,248,236,0.4);
+    margin-bottom: 24px;
+  }
+
+  /* -- FIELDS -- */
+  .field-group { display: flex; flex-direction: column; gap: 20px; }
+  .field-block { display: flex; flex-direction: column; gap: 10px; }
+  .field-row-label {
+    font-size: 11.5px; font-weight: 500; letter-spacing: 1.2px;
+    color: var(--dark);
+  }
+  .hint {
+    font-size: 11.5px; color: var(--slate); font-style: italic;
+    line-height: 1.5; display: block; margin-bottom: 4px;
+  }
+
+  textarea, input[type="text"], input[type="email"], input[type="number"] {
+    width: 100%; background: var(--offwhite);
+    border: 1.5px solid var(--rule); border-radius: 10px;
+    padding: 13px 16px; font-family: 'Montserrat', sans-serif;
+    font-size: 15px; color: var(--ink); line-height: 1.7;
+    transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+    resize: vertical;
+  }
+  textarea:focus, input[type="text"]:focus, input[type="email"]:focus, input[type="number"]:focus {
+    outline: none; border-color: var(--teal);
+    background: var(--white);
+    box-shadow: 0 0 0 3px rgba(158,248,236,0.14);
+  }
+  textarea { min-height: 70px; }
+  textarea.sm { min-height: 54px; }
+
+  /* -- TWO COL -- */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  @media (max-width: 560px) { .two-col { grid-template-columns: 1fr; } }
+
+  /* -- THREE COL -- */
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  @media (max-width: 560px) { .three-col { grid-template-columns: 1fr; } }
+
+  /* -- AD TYPE CARDS -- */
+  .ad-type-grid {
+    display: flex; flex-direction: column; gap: 12px;
+  }
+
+  .ad-type-card {
+    display: flex; flex-direction: row; align-items: center;
+    gap: 18px;
+    background: var(--offwhite);
+    border: 2px solid var(--rule);
+    border-radius: 14px;
+    padding: 20px 22px;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+    position: relative;
+  }
+  .ad-type-card:hover {
+    border-color: var(--teal);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+  }
+  .ad-type-card input[type="checkbox"] { display: none; }
+  .ad-type-card:has(input:checked) {
+    border-color: var(--teal);
+    background: rgba(158,248,236,0.06);
+    box-shadow: 0 0 0 3px rgba(158,248,236,0.18);
+  }
+  .ad-type-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; flex-shrink: 0;
+  }
+  .ad-type-icon.google { background: rgba(66,133,244,0.1); color: #4285F4; }
+  .ad-type-icon.meta { background: rgba(24,119,242,0.1); color: #1877F2; }
+  .ad-type-text { flex: 1; }
+  .ad-type-title {
+    font-size: 14px; font-weight: 700; color: var(--dark);
+    margin-bottom: 2px;
+  }
+  .ad-type-hint {
+    font-size: 11.5px; color: var(--slate); line-height: 1.4;
+  }
+  .ad-type-check {
+    width: 22px; height: 22px;
+    border-radius: 50%; border: 2px solid var(--rule);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; color: transparent;
+    transition: all 0.15s; flex-shrink: 0;
+  }
+  .ad-type-card:has(input:checked) .ad-type-check {
+    background: var(--teal); border-color: var(--teal);
+    color: transparent;
+  }
+
+  .mentor-tip {
+    background: rgba(158,248,236,0.08);
+    border: 1px solid rgba(158,248,236,0.3);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 12px; color: var(--dark); line-height: 1.6;
+    margin-bottom: 20px;
+    font-style: italic;
+  }
+
+  /* -- CHIPS -- */
+  .chip-group { display: flex; flex-wrap: wrap; gap: 10px; }
+  .chip-group input[type="checkbox"],
+  .chip-group input[type="radio"] { display: none; }
+  input[type="checkbox"]:checked + .chip,
+  input[type="radio"]:checked + .chip {
+    background: var(--teal); border-color: var(--teal);
+    color: var(--dark); font-weight: 600;
+  }
+  .chip {
+    display: inline-block; padding: 7px 16px;
+    border-radius: 50px; border: 1.5px solid var(--rule);
+    font-size: 11.5px; font-weight: 500;
+    background: var(--offwhite); color: var(--ink);
+    cursor: pointer; transition: all 0.15s;
+    font-family: 'Montserrat', sans-serif;
+    user-select: none;
+  }
+  .chip:hover { border-color: var(--teal); }
+
+  /* -- A/B VOICE CARDS -- */
+  .voice-option {
+    background: var(--offwhite);
+    border: 2px solid var(--rule);
+    border-radius: 14px;
+    padding: 22px 24px;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+    position: relative;
+  }
+  .voice-option:hover {
+    border-color: var(--teal);
+    transform: translateY(-1px);
+  }
+  .voice-option.selected {
+    border-color: var(--teal);
+    box-shadow: 0 0 0 3px rgba(158,248,236,0.18);
+  }
+  .voice-option-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+    color: var(--slate); margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+  .voice-option-label .check-mark {
+    float: right; color: var(--green);
+    font-size: 14px; display: none;
+  }
+  .voice-option.selected .check-mark { display: inline; }
+  .voice-option p {
+    font-size: 14px; color: var(--ink); line-height: 1.65;
+    font-style: italic;
+  }
+  .voice-neither {
+    text-align: center; padding: 12px;
+    font-size: 12px; color: var(--slate); font-weight: 500;
+    cursor: pointer; transition: color 0.15s;
+    border-radius: 10px;
+  }
+  .voice-neither:hover { color: var(--dark); }
+  .voice-neither.selected { color: var(--dark); font-weight: 700; }
+
+  /* -- INFO BOX -- */
+  .info-box {
+    background: rgba(158,248,236,0.1);
+    border: 1.5px solid var(--teal);
+    border-radius: 12px;
+    padding: 16px 20px;
+    font-size: 12.5px; color: var(--dark); line-height: 1.65;
+    margin-bottom: 24px;
+  }
+
+  /* -- STEPS -- */
+  .steps-list {
+    list-style: none; padding: 0; margin: 20px 0;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .steps-list li {
+    display: flex; align-items: flex-start; gap: 14px;
+    font-size: 13px; color: var(--ink); line-height: 1.55;
+  }
+  .step-num {
+    flex-shrink: 0; width: 26px; height: 26px;
+    background: var(--dark); color: white;
+    border-radius: 50%; text-align: center; line-height: 26px;
+    font-size: 11px; font-weight: 700;
+  }
+
+  /* -- MCC DISPLAY -- */
+  .mcc-display {
+    display: flex; align-items: center; gap: 14px;
+    background: var(--offwhite); border: 1.5px solid var(--rule);
+    border-radius: 12px; padding: 14px 20px;
+    margin-bottom: 20px;
+  }
+  .mcc-id {
+    font-size: 20px; font-weight: 700; color: var(--dark);
+    letter-spacing: 2px; font-family: 'Montserrat', monospace;
+  }
+  .btn-copy {
+    background: var(--offwhite); border: 1.5px solid var(--rule);
+    border-radius: 8px; padding: 6px 14px;
+    font-size: 11px; font-weight: 600; color: var(--ink);
+    cursor: pointer; font-family: 'Montserrat', sans-serif;
+    transition: border-color 0.15s, background 0.15s;
+    letter-spacing: 0.5px;
+  }
+  .btn-copy:hover { border-color: var(--teal); background: var(--white); }
+  .btn-copy.copied { background: rgba(158,248,236,0.2); border-color: var(--teal); color: var(--green); }
+
+  /* -- PHOTO UPLOAD -- */
+  .photo-upload {
+    border: 2px dashed var(--rule);
+    border-radius: 12px;
+    padding: 28px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    background: var(--offwhite);
+  }
+  .photo-upload:hover { border-color: var(--teal); background: rgba(158,248,236,0.04); }
+  .photo-upload input[type="file"] { display: none; }
+  .photo-upload-icon {
+    font-size: 28px; color: var(--slate); margin-bottom: 8px;
+  }
+  .photo-upload-text {
+    font-size: 12px; color: var(--slate); line-height: 1.5;
+  }
+  .photo-upload-text strong { color: var(--dark); }
+
+  /* -- REVIEW BLOCKS -- */
+  .review-block {
+    background: var(--offwhite);
+    border: 1.5px solid var(--rule);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 16px;
+  }
+  .review-title {
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 1.5px; color: var(--slate);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .review-row {
+    display: flex; justify-content: space-between;
+    padding: 6px 0; gap: 12px;
+  }
+  .review-label { font-size: 12px; color: var(--slate); flex-shrink: 0; }
+  .review-value {
+    font-size: 12px; color: var(--dark); font-weight: 600;
+    text-align: right; word-break: break-word;
+    max-width: 380px;
+  }
+
+  /* -- BUTTONS -- */
+  .btn-cta {
+    background: var(--teal); color: var(--dark);
+    border: none; padding: 16px 48px;
+    font-size: 13px; font-weight: 700;
+    letter-spacing: 1px; border-radius: 50px;
+    box-shadow: 0 6px 24px rgba(158,248,236,0.35);
+    cursor: pointer; font-family: 'Montserrat', sans-serif;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  .btn-cta:hover { opacity: 0.88; transform: translateY(-2px); }
+
+  .btn-primary {
+    background: var(--teal); color: var(--dark);
+    border: none; padding: 12px 36px;
+    font-size: 11.5px; font-weight: 600;
+    letter-spacing: 1px; border-radius: 12px;
+    box-shadow: 0 4px 14px rgba(158,248,236,0.3);
+    cursor: pointer; font-family: 'Montserrat', sans-serif;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  .btn-primary:hover { opacity: 0.85; transform: translateY(-1px); }
+
+  .btn-secondary {
+    background: var(--white); color: var(--ink);
+    border: 1.5px solid var(--rule);
+    padding: 12px 36px; font-size: 11.5px;
+    font-weight: 600; letter-spacing: 1px;
+    border-radius: 12px; cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--teal); transform: translateY(-1px); }
+
+  .nav-row {
+    display: flex; justify-content: center;
+    gap: 14px; margin-top: 36px;
+  }
+
+  /* -- TOAST -- */
+  .toast {
+    position: absolute; top: 20px; left: 50%;
+    transform: translateX(-50%);
+    padding: 14px 28px; border-radius: 12px;
+    font-size: 13px; font-weight: 600;
+    z-index: 200; opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    font-family: 'Montserrat', sans-serif;
+    white-space: nowrap;
+  }
+  .toast.show { opacity: 1; }
+  .toast-success {
+    background: #e8faf7; border: 1.5px solid var(--teal);
+    color: var(--dark);
+  }
+  .toast-error {
+    background: #fdf0ee; border: 1.5px solid var(--danger);
+    color: var(--danger);
+  }
+
+  /* -- MOBILE -- */
+  @media (max-width: 560px) {
+    .wizard-wrap { padding: 28px 14px 100px; }
+    .wcard { padding: 30px 22px 28px; }
+    .welcome-center h1 { font-size: 24px; }
+    .mcc-display { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .review-row { flex-direction: column; gap: 2px; }
+    .review-value { text-align: left; max-width: 100%; }
+    .three-col { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar-wrap">
+  <div class="progress-bar-fill" id="progressFill" data-label=""></div>
+</div>
+
+<div class="wizard-wrap">
+
+  <!-- Toast container -->
+  <div class="toast toast-success" id="toast"></div>
+
+  <!-- Card 0: Welcome -->
+  <div class="wcard wcard-active" data-card="0">
+    <div class="welcome-center">
+      <span class="badge">Takes about 10 minutes</span>
+      <h1>Marketing Suite</h1>
+      <p>A few questions so everything we build sounds like you. Nothing goes live without your approval.</p>
+      <button class="btn-cta" onclick="nav(1)">Get started</button>
+    </div>
+  </div>
+
+  <!-- Card 1: About you -->
+  <div class="wcard" data-card="1">
+    <div class="card-head">
+      <div class="card-label">About you</div>
+    </div>
+    <div class="field-group">
+      <div class="two-col">
+        <div class="field-block">
+          <label class="field-row-label">Full name</label>
+          <input type="text" id="fullName" placeholder="Jane Smith">
+        </div>
+        <div class="field-block">
+          <label class="field-row-label">Business name</label>
+          <input type="text" id="businessName" placeholder="Smith Realty Group">
+        </div>
+      </div>
+      <div class="field-block">
+        <label class="field-row-label">In one sentence, what do you do?</label>
+        <span class="hint">Not your elevator pitch -- how you'd explain it to a neighbor at a BBQ.</span>
+        <textarea id="whatYouDo" class="sm" placeholder="I help first-time buyers in Austin find homes they can actually afford."></textarea>
+      </div>
+      <div class="two-col">
+        <div class="field-block">
+          <label class="field-row-label">Primary market / area</label>
+          <input type="text" id="primaryMarket" placeholder="Austin, TX">
+        </div>
+        <div class="field-block">
+          <label class="field-row-label">Sub-markets / neighborhoods</label>
+          <textarea id="subMarkets" class="sm" placeholder="South Congress, East Austin, Cedar Park"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="nav-row">
+      <button class="btn-secondary" onclick="nav(-1)">Back</button>
+      <button class="btn-primary" onclick="nav(1)">Next</button>
+    </div>
+  </div>
+
+  <!-- Card 2: Ad types -->
+  <div class="wcard" data-card="2">
+    <div class="card-head">
+      <div class="card-label">What type of ads do you need?</div>
+      <div class="card-desc">Select all that apply. We'll walk you through connecting each platform.</div>
+    </div>
+    <div class="mentor-tip">Not sure? Most agents start with Google for active lead generation and add Meta when they have listings to promote.</div>
+    <div class="ad-type-grid" id="adTypeChips">
+      <label class="ad-type-card" for="adtype-buyer-seller">
+        <input type="checkbox" id="adtype-buyer-seller" value="Buyer/Seller Ads (Google)" onchange="updateAdBranches()">
+        <div class="ad-type-icon google">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
+        <div class="ad-type-text">
+          <div class="ad-type-title">Buyer / Seller Ads</div>
+          <div class="ad-type-hint">Google · Best for lead generation</div>
+        </div>
+        <span class="ad-type-check"></span>
+      </label>
+      <label class="ad-type-card" for="adtype-listing">
+        <input type="checkbox" id="adtype-listing" value="Listing Ads (Meta)" onchange="updateAdBranches()">
+        <div class="ad-type-icon meta">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <div class="ad-type-text">
+          <div class="ad-type-title">Listing Ads</div>
+          <div class="ad-type-hint">Meta · Best for active listings</div>
+        </div>
+        <span class="ad-type-check"></span>
+      </label>
+    </div>
+    <div class="nav-row">
+      <button class="btn-secondary" onclick="nav(-1)">Back</button>
+      <button class="btn-primary" onclick="navFromAdTypes()">Next</button>
+    </div>
+  </div>
+
+  <!-- Card 3: Your audience (conditional — Google/Buyer-Seller) -->
+  <div class="wcard" data-card="3">
+    <div class="card-head">
+      <div class="card-label">Your audience</div>
+      <div class="card-desc">Who are we trying to reach with your ads?</div>
+    </div>
+    <div class="field-group">
+      <div class="field-block">
+        <label class="field-row-label">Select your client demographics</label>
+        <div class="chip-group" id="idealClientsChips">
+          <input type="checkbox" id="ic-first-time" value="First-time buyers"><label class="chip" for="ic-first-time">First-time buyers</label>
+          <input type="checkbox" id="ic-move-up" value="Move-up buyers"><label class="chip" for="ic-move-up">Move-up buyers</label>
+          <input type="checkbox" id="ic-downsizers" value="Downsizers"><label class="chip" for="ic-downsizers">Downsizers</label>
+          <input type="checkbox" id="ic-sellers" value="Sellers"><label class="chip" for="ic-sellers">Sellers</label>
+          <input type="checkbox" id="ic-investors" value="Investors"><label class="chip" for="ic-investors">Investors</label>
+          <input type="checkbox" id="ic-luxury" value="Luxury buyers"><label class="chip" for="ic-luxury">Luxury buyers</label>
+          <input type="checkbox" id="ic-relocators" value="Relocators"><label class="chip" for="ic-relocators">Relocators</label>
+          <input type="checkbox" id="ic-veterans" value="Veterans / VA"><label class="chip" for="ic-veterans">Veterans / VA</label>
+          <input type="checkbox" id="ic-renters" value="Renters"><label class="chip" for="ic-renters">Renters</label>
+          <input type="checkbox" id="ic-commercial" value="Commercial"><label class="chip" for="ic-commercial">Commercial</label>
+          <input type="checkbox" id="ic-land" value="Land / lots"><label class="chip" for="ic-land">Land / lots</label>
+          <input type="checkbox" id="ic-newcon" value="New construction"><label class="chip" for="ic-newcon">New construction</label>
+        </div>
+      </div>
+      <div class="field-block">
+        <label class="field-row-label">Anything else about your ideal audience?</label>
+        <textarea id="audienceNotes" class="sm" placeholder="e.g. Young families, remote workers relocating from California..."></textarea>
+      </div>
+    </div>
+    <div class="nav-row">
+      <button class="btn-secondary" onclick="nav(-1)">Back</button>
+      <button class="btn-primary" onclick="nav(1)">Next</button>
+    </div>
+  </div>
+
+  <!-- Card 4: Listing info (conditional — Meta/Listing) -->
+  <div class="wcard" data-card="4">
+    <div class="card-head">
+      <div class="card-label">Listing details</div>
+      <div class="card-desc">Tell us about the listing you want to promote.</div>
+    </div>
+    <div class="info-box">This will connect directly to the MLS soon. For now, enter your listing details manually.</div>
+    <div class="field-group">
+      <div class="field-block">
+        <label class="field-row-label">Property address</label>
+        <input type="text" id="listingAddress" placeholder="123 Main St, Austin, TX 78701">
+      </div>
+      <div class="field-block">
+        <label class="field-row-label">Photos</label>
+        <label class="photo-upload" for="listingPhotos">
+          <input type="file" id="listingPhotos" multiple accept="image/*">
+          <div class="photo-upload-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          </div>
+          <div class="photo-upload-text"><strong>Click to upload</strong> or drag and drop<br>JPG, PNG up to 10MB each</div>
+        </label>
+      </div>
+      <div class="three-col">
+        <div class="field-block">
+          <label class="field-row-label">Beds</label>
+          <input type="number" id="listingBeds" placeholder="3" min="0">
+        </div>
+        <div class="field-block">
+          <label class="field-row-label">Baths</label>
+          <input type="number" id="listingBaths" placeholder="2" min="0">
+        </div>
+        <div class="field-block">
+          <label class="field-row-label">Sq ft</label>
+          <input type="number" id="listingSqft" placeholder="1,850" min="0">
+        </div>
+      </div>
+      <div class="field-block">
+        <label class="field-row-label">Description</label>
+        <textarea id="listingDescription" placeholder="Beautifully updated 3-bed home in the heart of South Congress with a large backyard and open floor plan..."></textarea>
+      </div>
+      <div class="field-block">
+        <label class="field-row-label">Additional details</label>
+        <span class="hint">Price, special features, open house dates, etc.</span>
+        <textarea id="listingExtras" class="sm" placeholder="Listed at $425,000. Open house this Saturday 1-4pm."></textarea>
+      </div>
+    </div>
+    <div class="nav-row">
+      <button class="btn-secondary" onclick="nav(-1)">Back</button>
+      <button class="btn-primary" onclick="nav(1)">Next</button>
+    </div>
+  </div>
+
+  <!-- Card 5: Your voice + differentiator -->
+  <div class="wcard" data-card="5">
+    <div class="card-head">
+      <div class="card-label">Your voice</div>
+    </div>
+    <div class="field-group">
+      <div class="field-block">
+        <label class="field-row-label">What makes you different from other agents?</label>
+        <span class="hint">Be specific -- numbers, results, and details are more useful than adjectives.</span>
+        <textarea id="differentiator" class="sm" placeholder="We close in an average of 28 days. Every listing gets professional staging and 3D tours included."></textarea>
+      </div>
+      <div class="field-block">
+        <label class="field-row-label">What do you believe most agents get wrong?</label>
+        <textarea id="contrarian" class="sm" placeholder="Most agents overpromise on price to win the listing, then do price reductions for weeks."></textarea>
+      </div>
+      <div class="field-block">
+        <label class="field-row-label">Words or phrases you HATE in marketing?</label>
+        <textarea id="wordsHate" class="sm" placeholder="'Synergy', 'dream home', 'guru', 'crushing it'..."></textarea>
+      </div>
+      <div class="field-block">
+        <label class="field-row-label">Phrases you actually use a lot?</label>
+        <textarea id="phrasesUse" class="sm" placeholder="'Here's the deal', 'Let's walk through the numbers', 'No surprises'..."></textarea>
+      </div>
+      <div class="field-block" style="margin-top: 8px;">
+        <label class="field-row-label">Which sounds more like you?</label>
+        <div style="display: flex; flex-direction: column; gap: 14px; margin-top: 6px;">
+          <div class="voice-option" data-voice="A" onclick="selectVoice('A')">
+            <div class="voice-option-label">Option A <span class="check-mark">&#10003;</span></div>
+            <p>"With over 20 years of experience, we're committed to providing exceptional service and results for our clients."</p>
+          </div>
+          <div class="voice-option" data-voice="B" onclick="selectVoice('B')">
+            <div class="voice-option-label">Option B <span class="check-mark">&#10003;</span></div>
+            <p>"We've been doing this 20 years. You'll know exactly what your home is worth, what it'll cost to sell, and what you'll walk away with. No surprises."</p>
+          </div>
+          <div class="voice-neither" data-voice="neither" onclick="selectVoice('neither')">
+            Neither -- I'll explain below
+          </div>
+          <textarea id="voiceOwn" class="sm" placeholder="Describe how you'd say it in your own words..." style="display:none;"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="nav-row">
+      <button class="btn-secondary" onclick="nav(-1)">Back</button>
+      <button class="btn-primary" onclick="nav(1)">Next</button>
+    </div>
+  </div>
+
+  <!-- Card 6: Connect Google Ads -->
+  <div class="wcard" data-card="6">
+    <div class="card-head">
+      <div class="card-label">Connect Google Ads</div>
+    </div>
+
+    <div class="info-box">
+      We need access to your Google Ads account so we can analyze your campaigns and write better ads. This is read-only -- we can't make changes without your approval.
+    </div>
+
+    <div class="field-group">
+      <div class="field-block">
+        <label class="field-row-label">Our Manager account ID</label>
+        <div class="mcc-display">
+          <span class="mcc-id" id="mccId">XXX-XXX-XXXX</span>
+          <button class="btn-copy" id="btnCopy" onclick="copyMCC()">Copy</button>
+        </div>
+      </div>
+
+      <div class="field-block">
+        <label class="field-row-label">How to link your account</label>
+        <ol class="steps-list">
+          <li><span class="step-num">1</span><span>Sign in to <strong>ads.google.com</strong></span></li>
+          <li><span class="step-num">2</span><span>Click <strong>Admin</strong> then <strong>Access and security</strong></span></li>
+          <li><span class="step-num">3</span><span>Go to the <strong>Managers</strong> tab</span></li>
+          <li><span class="step-num">4</span><span>Click <strong>Link a manager account</strong></span></li>
+          <li><span class="step-num">5</span><span>Enter the Manager ID shown above</span></li>
+          <li><span class="step-num">6</span><span>Click <strong>Send request</strong></span></li>
+        </ol>
+      </div>
+
+      <div class="field-block">
+        <label class="field-row-label">Your Google Ads Customer ID</label>
+        <span class="hint">You can find this in the top-right of your Google Ads dashboard. Format: XXX-XXX-XXXX</span>
+        <input type="text" id="googleAdsId" placeholder="123-456-7890">
+      </div>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn-secondary" onclick="nav(-1)">Back</button>
+      <button class="btn-primary" onclick="nav(1)">Next</button>
+    </div>
+  </div>
+
+  <!-- Card 7: Connect Meta Ads -->
+  <div class="wcard" data-card="7">
+    <div class="card-head">
+      <div class="card-label">Connect Meta Ads</div>
+      <div class="card-desc">Grant us partner access so we can view your campaigns and write better ads.</div>
+    </div>
+
+    <div class="info-box" style="margin-bottom: 20px;">
+      We use Meta Business Manager to access your ad account data. You'll assign our Business Manager as a partner so we can view your campaigns, audiences, and performance. This is view-only -- we can't make changes without your approval.
+    </div>
+
+    <div class="field-group">
+      <div class="field-block">
+        <label class="field-row-label">Our Business Manager ID</label>
+        <div class="mcc-display">
+          <span class="mcc-id" id="bmId">1643509803057937</span>
+          <button class="btn-copy" id="btnCopyBM" onclick="copyBM()">Copy</button>
+        </div>
+      </div>
+
+      <div class="field-block">
+        <label class="field-row-label">How to grant partner access</label>
+        <ol class="steps-list">
+          <li><span class="step-num">1</span><span>Go to <strong>business.facebook.com/settings</strong></span></li>
+          <li><span class="step-num">2</span><span>Click <strong>Ad accounts</strong> in the left menu</span></li>
+          <li><span class="step-num">3</span><span>Select the ad account you want to share</span></li>
+          <li><span class="step-num">4</span><span>Click <strong>Assign partner</strong></span></li>
+          <li><span class="step-num">5</span><span>Enter the Business Manager ID shown above</span></li>
+          <li><span class="step-num">6</span><span>Select <strong>View performance</strong> (at minimum)</span></li>
+          <li><span class="step-num">7</span><span>Click <strong>Save changes</strong></span></li>
+        </ol>
+      </div>
+
+      <div class="field-block">
+        <label class="field-row-label">Your Meta Ad Account ID</label>
+        <span class="hint">Found in Business Manager under Ad accounts. Format: act_XXXXXXXXXX</span>
+        <input type="text" id="metaAdAccountId" placeholder="act_1234567890">
+      </div>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn-secondary" onclick="nav(-1)">Back</button>
+      <button class="btn-primary" onclick="nav(1)">Next</button>
+    </div>
+  </div>
+
+  <!-- Card 8: Review + Submit -->
+  <div class="wcard" data-card="8">
+    <div class="card-head">
+      <div class="card-label">Review your answers</div>
+      <div class="card-desc">Look everything over. You can go back to any section to make changes.</div>
+    </div>
+
+    <div id="reviewContent"></div>
+
+    <div class="nav-row">
+      <button class="btn-secondary" onclick="nav(-1)">Back</button>
+      <button class="btn-primary" id="btnSubmit" onclick="submitForm()">Submit</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  /* ── Config ── */
+  var WEBHOOK_URL = '';
+  var MCC_ID = '576-571-0468';
+  var META_BM_ID = '1643509803057937';
+
+  /* ── State ── */
+  var currentCard = 0;
+  var selectedVoice = '';
+  var submitting = false;
+  var adBranches = { google: false, meta: false };
+
+  /* ── Init ── */
+  document.getElementById('mccId').textContent = MCC_ID;
+  document.getElementById('bmId').textContent = META_BM_ID;
+  updateProgress();
+
+  function updateAdBranches() {
+    adBranches.google = document.getElementById('adtype-buyer-seller').checked;
+    adBranches.meta = document.getElementById('adtype-listing').checked;
+  }
+
+  function getCardOrder() {
+    var order = [0, 1, 2];
+    if (adBranches.google) order.push(3);
+    if (adBranches.meta) order.push(4);
+    order.push(5);
+    if (adBranches.google) order.push(6);
+    if (adBranches.meta) order.push(7);
+    order.push(8);
+    return order;
+  }
+
+  function navFromAdTypes() {
+    if (!adBranches.google && !adBranches.meta) {
+      alert('Please select at least one ad type to continue.');
+      return;
+    }
+    var order = getCardOrder();
+    var idx = order.indexOf(2);
+    goToCard(order[idx + 1]);
+  }
+
+  /* ── Navigation ── */
+  function nav(dir) {
+    var order = getCardOrder();
+    var idx = order.indexOf(currentCard);
+    var nextIdx = idx + dir;
+    if (nextIdx < 0 || nextIdx >= order.length) return;
+    goToCard(order[nextIdx]);
+  }
+
+  function goToCard(next) {
+    var current = document.querySelector('.wcard[data-card="' + currentCard + '"]');
+    var target = document.querySelector('.wcard[data-card="' + next + '"]');
+    if (!target) return;
+
+    current.classList.remove('wcard-active');
+    current.classList.add('wcard-exit');
+
+    setTimeout(function() {
+      current.classList.remove('wcard-exit');
+      current.style.display = 'none';
+      current.style.opacity = '0';
+
+      target.style.display = '';
+      target.style.opacity = '';
+      target.classList.add('wcard-active');
+      currentCard = next;
+      updateProgress();
+
+      if (next === 8) buildReview();
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 250);
+  }
+
+  /* ── Progress ── */
+  function updateProgress() {
+    var order = getCardOrder();
+    var idx = order.indexOf(currentCard);
+    var pct = idx <= 0 ? 0 : Math.round((idx / (order.length - 1)) * 100);
+    var fill = document.getElementById('progressFill');
+    fill.style.width = pct + '%';
+    fill.setAttribute('data-label', idx > 0 ? (idx + 1) + ' of ' + order.length : '');
+  }
+
+  /* ── Voice A/B ── */
+  function selectVoice(choice) {
+    selectedVoice = choice;
+    var options = document.querySelectorAll('.voice-option, .voice-neither');
+    options.forEach(function(el) { el.classList.remove('selected'); });
+
+    if (choice === 'neither') {
+      document.querySelector('.voice-neither').classList.add('selected');
+      document.getElementById('voiceOwn').style.display = 'block';
+    } else {
+      document.querySelector('.voice-option[data-voice="' + choice + '"]').classList.add('selected');
+      document.getElementById('voiceOwn').style.display = 'none';
+    }
+  }
+
+  /* ── Copy MCC ── */
+  function copyMCC() {
+    var btn = document.getElementById('btnCopy');
+    navigator.clipboard.writeText(MCC_ID).then(function() {
+      btn.textContent = 'Copied';
+      btn.classList.add('copied');
+      setTimeout(function() {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+      }, 2000);
+    }).catch(function() {
+      var ta = document.createElement('textarea');
+      ta.value = MCC_ID;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      btn.textContent = 'Copied';
+      btn.classList.add('copied');
+      setTimeout(function() {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+
+  function copyBM() {
+    var btn = document.getElementById('btnCopyBM');
+    navigator.clipboard.writeText(META_BM_ID).then(function() {
+      btn.textContent = 'Copied';
+      btn.classList.add('copied');
+      setTimeout(function() {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+      }, 2000);
+    }).catch(function() {
+      var ta = document.createElement('textarea');
+      ta.value = META_BM_ID;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      btn.textContent = 'Copied';
+      btn.classList.add('copied');
+      setTimeout(function() {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+
+  /* ── Build review ── */
+  function buildReview() {
+    var html = '';
+
+    html += reviewBlock('About you', [
+      ['Full name', val('fullName')],
+      ['Business name', val('businessName')],
+      ['What you do', val('whatYouDo')],
+      ['Primary market', val('primaryMarket')],
+      ['Sub-markets', val('subMarkets')]
+    ]);
+
+    html += reviewBlock('Ad types', [
+      ['Selected', getChips('adTypeChips')]
+    ]);
+
+    if (adBranches.google) {
+      html += reviewBlock('Your audience', [
+        ['Demographics', getChips('idealClientsChips')],
+        ['Notes', val('audienceNotes')]
+      ]);
+    }
+
+    if (adBranches.meta) {
+      html += reviewBlock('Listing details', [
+        ['Address', val('listingAddress')],
+        ['Beds / Baths / Sq ft', val('listingBeds') + ' bd / ' + val('listingBaths') + ' ba / ' + val('listingSqft') + ' sqft'],
+        ['Description', val('listingDescription')],
+        ['Additional', val('listingExtras')]
+      ]);
+    }
+
+    var voiceVal = selectedVoice === 'A' ? 'Option A' :
+                   selectedVoice === 'B' ? 'Option B' :
+                   selectedVoice === 'neither' ? 'Neither: ' + val('voiceOwn') :
+                   'Not selected';
+    html += reviewBlock('Your voice', [
+      ['Differentiator', val('differentiator')],
+      ['Contrarian view', val('contrarian')],
+      ['Words you hate', val('wordsHate')],
+      ['Phrases you use', val('phrasesUse')],
+      ['Voice preference', voiceVal]
+    ]);
+
+    if (adBranches.google) {
+      html += reviewBlock('Google Ads', [
+        ['Customer ID', val('googleAdsId')]
+      ]);
+    }
+
+    if (adBranches.meta) {
+      html += reviewBlock('Meta Ads', [
+        ['Ad Account ID', val('metaAdAccountId')]
+      ]);
+    }
+
+    document.getElementById('reviewContent').innerHTML = html;
+  }
+
+  function reviewBlock(title, rows) {
+    var h = '<div class="review-block"><div class="review-title">' + title + '</div>';
+    rows.forEach(function(r) {
+      h += '<div class="review-row"><span class="review-label">' + r[0] + '</span><span class="review-value">' + esc(r[1] || '--') + '</span></div>';
+    });
+    h += '</div>';
+    return h;
+  }
+
+  function val(id) {
+    var el = document.getElementById(id);
+    return el ? el.value.trim() : '';
+  }
+
+  function getChips(groupId) {
+    var group = document.getElementById(groupId);
+    if (!group) return '';
+    var checked = group.querySelectorAll('input[type="checkbox"]:checked');
+    var values = [];
+    for (var i = 0; i < checked.length; i++) values.push(checked[i].value);
+    return values.join(', ');
+  }
+
+  function esc(s) {
+    var d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  /* ── Submit ── */
+  function submitForm() {
+    if (submitting) return;
+    submitting = true;
+
+    var btn = document.getElementById('btnSubmit');
+    btn.textContent = 'Submitting...';
+    btn.style.opacity = '0.6';
+
+    var voiceVal = selectedVoice === 'A' ? 'Option A' :
+                   selectedVoice === 'B' ? 'Option B' :
+                   selectedVoice === 'neither' ? 'Neither: ' + val('voiceOwn') :
+                   '';
+
+    var payload = {
+      fullName: val('fullName'),
+      businessName: val('businessName'),
+      whatYouDo: val('whatYouDo'),
+      primaryMarket: val('primaryMarket'),
+      subMarkets: val('subMarkets'),
+      adTypes: getChips('adTypeChips'),
+      idealClients: getChips('idealClientsChips'),
+      audienceNotes: val('audienceNotes'),
+      listingAddress: val('listingAddress'),
+      listingBeds: val('listingBeds'),
+      listingBaths: val('listingBaths'),
+      listingSqft: val('listingSqft'),
+      listingDescription: val('listingDescription'),
+      listingExtras: val('listingExtras'),
+      differentiator: val('differentiator'),
+      contrarian: val('contrarian'),
+      wordsHate: val('wordsHate'),
+      phrasesUse: val('phrasesUse'),
+      voicePreference: voiceVal,
+      googleAdsId: val('googleAdsId'),
+      metaAdAccountId: val('metaAdAccountId'),
+      submittedAt: new Date().toISOString()
+    };
+
+    if (!WEBHOOK_URL) {
+      showToast('Submitted. We\'ll review your answers and build your first brief.');
+      btn.textContent = 'Submitted';
+      return;
+    }
+
+    fetch(WEBHOOK_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(function() {
+      showToast('Submitted. We\'ll review your answers and build your first brief.');
+      btn.textContent = 'Submitted';
+    }).catch(function() {
+      showToast('Something went wrong. Please try again.', true);
+      btn.textContent = 'Submit';
+      btn.style.opacity = '1';
+      submitting = false;
+    });
+  }
+
+  /* ── Toast ── */
+  function showToast(msg, isError) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast ' + (isError ? 'toast-error' : 'toast-success') + ' show';
+    setTimeout(function() { t.classList.remove('show'); }, 4500);
+  }
+</script>
+</body>
+</html>
