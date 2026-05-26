@@ -1105,6 +1105,7 @@
     });
 
     if (SHEET_URL) {
+      payload.source = 'marketing';
       var sheetParams = new URLSearchParams(payload);
       fetch(SHEET_URL, {
         method: 'POST',
